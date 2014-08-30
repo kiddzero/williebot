@@ -1,4 +1,0 @@
-williebot
-=========
-
-python IRC bot
