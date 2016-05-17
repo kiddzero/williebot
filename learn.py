@@ -62,5 +62,5 @@ def get(bot, trigger):
         bot.say("%s: %s" % (key, value))
       except redis.ResponseError:
         value = rcache.lrange(key, 0, -1)
-        for i, v in enumerate(value):
+        for i, v in enumerate(value[::-1]):
           bot.say("{0}: {1}".format(i, v))
