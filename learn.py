@@ -20,11 +20,14 @@ def learn(bot, trigger):
     if rcache.exists(key):
       existing = rcache.get(key)
       if not isinstance(existing, list):
-        rcache.set(key, [existing, str_value])
+        # if its not a list you have to delete it first, then lpush its values
+        rcache.delete(key)
+        rcache.lpush(key, existing, str_value)
       else:
+        # if its already a list can just lpush its new value
         rcache.lpush(key, str_value)
     else:
-      rcache.set(key, [str_value])
+      rcache.lpush(key, str_value)
     bot.say("Learnt that shit son> '%s': %s" % (key, str_value))
   elif command == "del":
     rcache.delete(key)
@@ -47,9 +50,10 @@ def get(bot, trigger):
     if not rcache.exists(key):
       bot.say("Could not find '%s'" % key)
     else:
-      value = rcache.get(key)
-      if isinstance(value, list):
+      try:
+        value = rcache.get(key)
+        bot.say("%s: %s" % (key, value))
+      except redis.ResponseError:
+        value = rcache.lrange(key, 0, -1)
         for v in value:
           bot.say(v)
-      else:
-        bot.say("%s: %s" % (key, value))
