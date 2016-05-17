@@ -20,12 +20,11 @@ def learn(bot, trigger):
     if rcache.exists(key):
       existing = rcache.get(key)
       if not isinstance(existing, list):
-        value = [existing, str_value]
+        rcache.set(key, [existing, str_value])
       else:
-        value = existing + [str_value]
+        rcache.lpush(key, str_value)
     else:
-      value = [str_value]
-    rcache.set(key, value)
+      rcache.set(key, [str_value])
     bot.say("Learnt that shit son> '%s': %s" % (key, value))
   elif command == "del":
     rcache.delete(key)
@@ -48,4 +47,9 @@ def get(bot, trigger):
     if not rcache.exists(key):
       bot.say("Could not find '%s'" % key)
     else:
-      bot.say("%s: %s" % (key, rcache.get(key)))
+      value = rcache.get(key)
+      if isinstance(value, list):
+        for v in value:
+          bot.say(v)
+      else:
+        bot.say("%s: %s" % (key, value))
