@@ -12,7 +12,19 @@ def learn(bot, trigger):
   command = tmp[0]
   key = tmp[1]
   if command == "add":
-    value = ' '.join(tmp[2:])
+    str_value = ' '.join(tmp[2:])
+    # if the key already exists determine if its already a list,
+    # if it is not a list then make a list of the existing value + the new value
+    # if it is already a list simply add the new value to the list.
+    # if the key does not exist make the value a list of the string value
+    if rcache.exists(key):
+      existing = rcache.get(key)
+      if not isinstance(existing, list):
+        value = [existing, str_value]
+      else:
+        value = existing + [str_value]
+    else:
+      value = [str_value]
     rcache.set(key, value)
     bot.say("Learnt that shit son> '%s': %s" % (key, value))
   elif command == "del":
