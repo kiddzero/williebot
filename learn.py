@@ -18,7 +18,10 @@ def learn(bot, trigger):
     # if it is already a list simply add the new value to the list.
     # if the key does not exist make the value a list of the string value
     if rcache.exists(key):
-      existing = rcache.get(key)
+      try:
+        existing = rcache.get(key)
+      except redis.ResponseError:
+        existing = rcache.lrange(key, 0, -1)
       if not isinstance(existing, list):
         # if its not a list you have to delete it first, then lpush its values
         rcache.delete(key)
