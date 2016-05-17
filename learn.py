@@ -31,8 +31,11 @@ def learn(bot, trigger):
           rcache.set(key, existing)
       except redis.ResponseError:
         # its a list
-        rcache.lpush(key, str_value)
-        bot.say("Learnt that shit son> '%s': %s" % (key, str_value))
+        try:
+          rcache.lpush(key, str_value)
+          bot.say("Learnt that shit son> '%s': %s" % (key, str_value))
+        except redis.ResponseError:
+          bot.say("Error trying to write {0} to key {1}".format(str_value, key))
   elif command == "del":
     rcache.delete(key)
     bot.say("Removed that bitch ass shit> '%s'" % key)
