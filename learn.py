@@ -48,7 +48,7 @@ def learn(bot, trigger):
   else:
     bot.say("Use .learn [add|del] key <value>")
  
-@sopel.module.commands(".")
+@sopel.module.commands("\.")
 def get(bot, trigger):
   key = trigger.group(2)
   if len(key.split()) > 1:
