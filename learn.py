@@ -19,19 +19,20 @@ def learn(bot, trigger):
     # if the key does not exist make the value a list of the string value
     if rcache.exists(key):
       try:
+        # its a string
         existing = rcache.get(key)
-      except redis.ResponseError:
-        existing = rcache.lrange(key, 0, -1)
-      if not isinstance(existing, list):
-        # if its not a list you have to delete it first, then lpush its values
+        new = [existing, str_value]
         rcache.delete(key)
-        rcache.lpush(key, existing, str_value)
-      else:
-        # if its already a list can just lpush its new value
+        try:
+          rcache.lpush(key, *new)
+          bot.say("Learnt that shit son> '%s': %s" % (key, str_value))
+        except redis.ResponseError:
+          bot.say("Error trying to write {0} to key {1}".format(new, key))
+          rcache.set(key, existing)
+      except redis.ResponseError:
+        # its a list
         rcache.lpush(key, str_value)
-    else:
-      rcache.lpush(key, str_value)
-    bot.say("Learnt that shit son> '%s': %s" % (key, str_value))
+        bot.say("Learnt that shit son> '%s': %s" % (key, str_value))
   elif command == "del":
     rcache.delete(key)
     bot.say("Removed that bitch ass shit> '%s'" % key)
