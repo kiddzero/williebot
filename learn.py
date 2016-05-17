@@ -25,7 +25,7 @@ def learn(bot, trigger):
         rcache.lpush(key, str_value)
     else:
       rcache.set(key, [str_value])
-    bot.say("Learnt that shit son> '%s': %s" % (key, value))
+    bot.say("Learnt that shit son> '%s': %s" % (key, str_value))
   elif command == "del":
     rcache.delete(key)
     bot.say("Removed that bitch ass shit> '%s'" % key)
