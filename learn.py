@@ -36,6 +36,9 @@ def learn(bot, trigger):
           bot.say("Learnt that shit son> '%s': %s" % (key, str_value))
         except redis.ResponseError:
           bot.say("Error trying to write {0} to key {1}".format(str_value, key))
+    else:
+      rcache.lpush(key, str_value)
+      bot.say("Learnt that shit son> '%s': %s" % (key, str_value))
   elif command == "del":
     rcache.delete(key)
     bot.say("Removed that bitch ass shit> '%s'" % key)
