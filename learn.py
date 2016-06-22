@@ -40,8 +40,20 @@ def learn(bot, trigger):
       rcache.lpush(key, str_value)
       bot.say("Learnt that shit son> '%s': %s" % (key, str_value))
   elif command == "del":
-    rcache.delete(key)
-    bot.say("Removed that bitch ass shit> '%s'" % key)
+    if len(tmp) == 2:
+      rcache.delete(key)
+      bot.say("Removed that bitch ass shit> '%s'" % key)
+    elif len(tmp) == 3:
+      index = tmp[2]
+      current = rcache.lrange(key, 0, -1)
+      try:
+        # items are displayed in reverse for cronological ordering
+        index_to_remove = len(current) - 1 - int(index)
+        to_remove = current[index_to_remove]
+        rcache.lrem(key, to_remove)
+        bot.say("Removed the shit from the ass> dookie #%s" % index)
+      except Exception as e:
+        bot.say(str(e))
   elif command == "find":
     found = [k for k in rcache.keys() if key in k]
     if len(found) > 0:
