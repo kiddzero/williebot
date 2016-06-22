@@ -1,10 +1,10 @@
 import sys
- 
+
 import redis
 import sopel
- 
+
 rcache = redis.Redis(host="127.0.0.1", port="6379")
- 
+
 @sopel.module.commands("learn")
 def learn(bot, trigger):
   tmp = trigger.group(2)
@@ -50,7 +50,7 @@ def learn(bot, trigger):
       bot.say("No matches found for %s" % key)
   else:
     bot.say("Use .learn [add|del] key <value>")
- 
+
 @sopel.module.commands("\.")
 def get(bot, trigger):
   key = trigger.group(2)
